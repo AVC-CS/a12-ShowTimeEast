@@ -1,76 +1,83 @@
 #include <iostream>
-#include <cstdlib>  // for malloc
+#include <cstdlib>   // malloc/free
+#include <cstdint>   // uintptr_t
+
 using namespace std;
 
-// TODO: Declare 2 initialized global variables (DATA segment)
+// DATA segment: initialized globals
+int data1 = 100;
+int data2 = 200;
 
-// TODO: Declare 2 uninitialized global variables (BSS segment)
+// BSS segment: uninitialized globals (zeroed by OS)
+int bss1;
+int bss2;
 
-// Stack check function: receives address from caller (parent frame)
-// and compares with a local variable (child frame)
+static void printAddr(const char* label, const void* p) {
+    cout << label << " " << p << endl;
+}
+
 void checkStack(int* parentAddr) {
     int childVar = 0;
-    cout << "--- STACK SEGMENT (Cross-function comparison) ---" << endl;
-    // TODO: Print parentAddr value (points to main's local var - parent frame)
-    // TODO: Print &parentAddr (parameter's own address - child frame)
-    // TODO: Print &childVar (local var address - child frame)
-    // TODO: Print "Stack grows: DOWN" or "UP" based on comparison
-    //       Compare: parentAddr > &childVar ? "DOWN" : "UP"
-    //       (parent frame address vs child frame address)
+
+    cout << "STACK" << endl;
+    printAddr("parentAddr (main local address):", parentAddr);
+    printAddr("&parentAddr (parameter address):", &parentAddr);
+    printAddr("&childVar (child local address):", &childVar);
+
+    uintptr_t p = reinterpret_cast<uintptr_t>(parentAddr);
+    uintptr_t c = reinterpret_cast<uintptr_t>(&childVar);
+
+    if (p > c) cout << "Stack grows: DOWN" << endl;
+    else       cout << "Stack grows: UP" << endl;
+
     cout << endl;
 }
 
 int main() {
+    int localVar = 10;
 
-    // TODO: Declare a local variable (STACK - will be passed to checkStack)
+    void* heap1 = malloc(1024);
+    void* heap2 = malloc(1024);
 
-    // TODO: Allocate 2 heap variables using malloc (use larger sizes, e.g. 1024)
-    //       Note: new may not allocate sequentially; malloc with larger sizes
-    //       is more reliable for demonstrating heap growth direction
+    cout << "=== MEMORY SEGMENT BOUNDARIES ===\n\n";
 
-    cout << "=== MEMORY SEGMENT BOUNDARIES ===" << endl;
+    cout << "TEXT" << endl;
+    printAddr("Address of main:", reinterpret_cast<void*>(&main));
+    printAddr("Address of checkStack:", reinterpret_cast<void*>(&checkStack));
     cout << endl;
 
-    // TODO: Print TEXT segment - 2 function addresses
-    //       e.g., (void*)&main and (void*)&checkStack
-    cout << "--- TEXT SEGMENT (Code) ---" << endl;
-    // ...
+    cout << "DATA" << endl;
+    printAddr("data1 address:", &data1);
+    cout << "data1 value: " << data1 << endl;
+    printAddr("data2 address:", &data2);
+    cout << "data2 value: " << data2 << endl;
     cout << endl;
 
-    // TODO: Print DATA segment - 2 initialized global addresses + values
-    cout << "--- DATA SEGMENT (Initialized Globals) ---" << endl;
-    // ...
+    cout << "BSS" << endl;
+    printAddr("bss1 address:", &bss1);
+    cout << "bss1 value: " << bss1 << endl;
+    printAddr("bss2 address:", &bss2);
+    cout << "bss2 value: " << bss2 << endl;
     cout << endl;
 
-    // TODO: Print BSS segment - 2 uninitialized global addresses + values
-    cout << "--- BSS SEGMENT (Uninitialized Globals) ---" << endl;
-    // ...
+    checkStack(&localVar);
+
+    cout << "HEAP" << endl;
+    printAddr("heap1 address:", heap1);
+    printAddr("heap2 address:", heap2);
+
+    uintptr_t h1 = reinterpret_cast<uintptr_t>(heap1);
+    uintptr_t h2 = reinterpret_cast<uintptr_t>(heap2);
+
+    if (h2 > h1) cout << "Heap grows: UP" << endl;
+    else         cout << "Heap grows: DOWN" << endl;
     cout << endl;
 
-    // STACK: call checkStack with address of your local variable
-    // TODO: checkStack(&yourLocalVar);
-
-    // TODO: Print HEAP segment - 2 heap addresses + comparison
-    //       Print "Heap grows: UP" or "DOWN"
-    cout << "--- HEAP SEGMENT (Dynamic Allocation) ---" << endl;
-    // ...
-    cout << endl;
-
-    // TODO: Print relative position summary
     cout << "=== RELATIVE POSITION SUMMARY ===" << endl;
-    // ...
+    cout << "Compare printed addresses above (typical: TEXT lowest, STACK highest)." << endl;
 
-    // TODO: Free all heap allocations
+    free(heap1);
+    free(heap2);
 
     return 0;
 }
-
-/*
- * EXPERIMENTAL RESULTS:
- * TODO: After running your program, explain what you observed:
- * - Which segment has the lowest addresses?
- * - Which has the highest?
- * - Does stack grow down? How did you verify this?
- * - Does heap grow up? How did you verify this?
- * - What is the gap between HEAP and STACK?
- */
