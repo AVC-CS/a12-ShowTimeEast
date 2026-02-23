@@ -1,0 +1,31 @@
+=== MEMORY SEGMENT BOUNDARIES ===
+
+TEXT
+Address of main: 0x10485c7e8
+Address of checkStack: 0x10485c5d0
+
+DATA
+data1 address: 0x104864000
+data1 value: 100
+data2 address: 0x104864004
+data2 value: 200
+
+BSS
+bss1 address: 0x104864008
+bss1 value: 0
+bss2 address: 0x10486400c
+bss2 value: 0
+
+STACK
+parentAddr (main local address): 0x16b5a2cd8
+&parentAddr (parameter address): 0x16b5a2c48
+&childVar (child local address): 0x16b5a2c44
+Stack grows: DOWN
+
+HEAP
+heap1 address: 0x104ed21a0
+heap2 address: 0x104ed25a0
+Heap grows: UP
+
+=== RELATIVE POSITION SUMMARY ===
+Compare printed addresses above (typical: TEXT lowest, STACK highest).
