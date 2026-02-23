@@ -2,87 +2,75 @@
 #include <cstdlib>  // for malloc
 using namespace std;
 
-// TEXT segment - code lives here (functions)
-// DATA segment - global/static initialized variables
-int globalVar = 100;           // initialized data (DATA)
-static int staticVar = 200;    // static initialized (DATA)
+// TODO: Declare 2 initialized global variables (DATA segment)
 
-// BSS segment (uninitialized data, part of DATA)
-int uninitGlobal;              // uninitialized global (BSS)
-int uninitGlobal2;             // second uninitialized global (BSS)
+// TODO: Declare 2 uninitialized global variables (BSS segment)
 
-// Stack check: compare address from main (parent) vs child function
+// Stack check function: receives address from caller (parent frame)
+// and compares with a local variable (child frame)
 void checkStack(int* parentAddr) {
-    int childVar = 99;
+    int childVar = 0;
     cout << "--- STACK SEGMENT (Cross-function comparison) ---" << endl;
-    cout << "main local addr (parent frame) : " << (void*)parentAddr << endl;
-    cout << "param addr (child frame)       : " << (void*)&parentAddr << endl;
-    cout << "child local addr (child frame) : " << (void*)&childVar << endl;
-    cout << "Stack grows: "
-         << (parentAddr > &childVar ? "DOWN (parent frame > child frame)" : "UP")
-         << endl;
+    // TODO: Print parentAddr value (points to main's local var - parent frame)
+    // TODO: Print &parentAddr (parameter's own address - child frame)
+    // TODO: Print &childVar (local var address - child frame)
+    // TODO: Print "Stack grows: DOWN" or "UP" based on comparison
+    //       Compare: parentAddr > &childVar ? "DOWN" : "UP"
+    //       (parent frame address vs child frame address)
     cout << endl;
 }
 
 int main() {
 
-    // STACK segment - local variable in main
-    int mainVar = 10;
+    // TODO: Declare a local variable (STACK - will be passed to checkStack)
 
-    // HEAP segment - dynamic allocation (malloc, larger sizes)
-    // int* heapVar1 = new int(42);   // new may not allocate sequentially
-    // int* heapVar2 = new int(99);
-    char* heapVar1 = (char*)malloc(1024);
-    char* heapVar2 = (char*)malloc(1024);
+    // TODO: Allocate 2 heap variables using malloc (use larger sizes, e.g. 1024)
+    //       Note: new may not allocate sequentially; malloc with larger sizes
+    //       is more reliable for demonstrating heap growth direction
 
     cout << "=== MEMORY SEGMENT BOUNDARIES ===" << endl;
     cout << endl;
 
-    // TEXT segment (code/instructions)
+    // TODO: Print TEXT segment - 2 function addresses
+    //       e.g., (void*)&main and (void*)&checkStack
     cout << "--- TEXT SEGMENT (Code) ---" << endl;
-    cout << "Address of main()       : " << (void*)&main << endl;
-    cout << "Address of checkStack() : " << (void*)&checkStack << endl;
+    // ...
     cout << endl;
 
-    // DATA segment (initialized globals)
+    // TODO: Print DATA segment - 2 initialized global addresses + values
     cout << "--- DATA SEGMENT (Initialized Globals) ---" << endl;
-    cout << "globalVar  addr : " << (void*)&globalVar
-         << " value: " << globalVar << endl;
-    cout << "staticVar  addr : " << (void*)&staticVar
-         << " value: " << staticVar << endl;
+    // ...
     cout << endl;
 
-    // BSS segment (uninitialized globals)
+    // TODO: Print BSS segment - 2 uninitialized global addresses + values
     cout << "--- BSS SEGMENT (Uninitialized Globals) ---" << endl;
-    cout << "uninitGlobal  addr: " << (void*)&uninitGlobal
-         << " value: " << uninitGlobal << endl;
-    cout << "uninitGlobal2 addr: " << (void*)&uninitGlobal2
-         << " value: " << uninitGlobal2 << endl;
+    // ...
     cout << endl;
 
-    // STACK segment - cross-function comparison (guaranteed)
-    checkStack(&mainVar);
+    // STACK: call checkStack with address of your local variable
+    // TODO: checkStack(&yourLocalVar);
 
-    // HEAP segment (dynamic - grows UP)
+    // TODO: Print HEAP segment - 2 heap addresses + comparison
+    //       Print "Heap grows: UP" or "DOWN"
     cout << "--- HEAP SEGMENT (Dynamic Allocation) ---" << endl;
-    cout << "heapVar1 addr  : " << (void*)heapVar1 << endl;
-    cout << "heapVar2 addr  : " << (void*)heapVar2 << endl;
-    cout << "Heap grows: "
-         << (heapVar2 > heapVar1 ? "UP (lower to higher)" : "DOWN")
-         << endl;
+    // ...
     cout << endl;
 
-    // Summary - relative positions
+    // TODO: Print relative position summary
     cout << "=== RELATIVE POSITION SUMMARY ===" << endl;
-    cout << "TEXT  (lowest) : " << (void*)&main      << endl;
-    cout << "DATA           : " << (void*)&globalVar  << endl;
-    cout << "BSS            : " << (void*)&uninitGlobal << endl;
-    cout << "HEAP           : " << (void*)heapVar1   << endl;
-    cout << "STACK (highest): " << (void*)&mainVar   << endl;
+    // ...
 
-    // cleanup
-    free(heapVar1);
-    free(heapVar2);
+    // TODO: Free all heap allocations
 
     return 0;
 }
+
+/*
+ * EXPERIMENTAL RESULTS:
+ * TODO: After running your program, explain what you observed:
+ * - Which segment has the lowest addresses?
+ * - Which has the highest?
+ * - Does stack grow down? How did you verify this?
+ * - Does heap grow up? How did you verify this?
+ * - What is the gap between HEAP and STACK?
+ */
